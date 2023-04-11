@@ -1,0 +1,13 @@
+SAGA Pattern and 2PC for distributed transactions ?
+Transactions spanning across multiple microservices for example are called distributed transactions. Here comes the SAGA and 2PC protocol :
+Saga pattern is a design pattern used to handle global transactions across microservices. While in a single component (monolith application) it is fairly simple to execute transactions and rollback whenever something goes wrong, but in the case of microservices architecture it gets difficult to monitor transactions on a global scale and achieve consistency where local transactions are executed on each microservice.
+2 Phase Commit Protocol (2PC) and the SAGA pattern are 2 solutions to this.
+
+2PC : Depends on a central component called Coordinator which acts as the center of communication, where all microservices confirm their readiness to commit in a first phase. If they all confirm, then the Coordinator proceeds to the 2nd phase where all microservices confirm they committed their local transactions. If any one fails to commit then the Coordinator demands all of them to rollback.
+
+SAGA Pattern : is based also on a coordinator called Saga Execution Coordinator (SEC), it is a component which keeps the logs of all transactions and whenever a microservice fails to commit or reports a failure the SEC performs the "compensating workflow of transaction" (see image below) where he will try to rollback to initial state based on where the failure raised and the sequence of local transactions saved on the logs.
+
+There are 2 ways to implement SAGA pattern, Choreography and Orchestration.
+In the Choreography pattern, the microservices are generally part of the SAGA workflow and communicate with each other by publishing an event which is processed by the next microservice, while in the Orchestration pattern there is a single central component which is responsible for management the status of the sequential transactions.
+
+Also, 2PC focuses on strong consistency (NoSQL databases not supported) and SAGA achieves consistency sequentially.
